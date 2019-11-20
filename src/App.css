@@ -1,22 +1,32 @@
 .App {
   text-align: center;
+  background-color: lightgray;
 }
-
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
+/* 
+.App-body {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
+} */
+
+.app-main{
+  background-color: whitesmoke;
+  min-height: 100vh;
 }
 
-.App-link {
-  color: #09d3ac;
+.card-class{
+  max-width: 750px;
+  
+ 
 }
+
+.details-class{
+  background-color: F5F5F5;
+  min-height: 100vh;
+}
+

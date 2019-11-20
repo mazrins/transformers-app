@@ -1,25 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import Transformers from './components/Transformers';
+import AddTransformer from './components/AddTransformer';
+import TransformerDetails from './components/TransformerDetails';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container">
+        <div className="app-main">
+          <Router>
+            <Switch>
+              <Route exact path="/" component={Transformers} />
+              <Route exact path="/add-transformer/" component={AddTransformer} />
+              <Route exact path="/details/:id" component={TransformerDetails} />
+              <Redirect from="*" to="/" />
+            </Switch>
+          </Router>
+        </div>
+      </div>
+
     </div>
+
   );
 }
 
