@@ -30,17 +30,31 @@ export default class AddTransformer extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        const transformer = {
-            transformer: {
+
+        if (this.state.transformerName === "") {
+            alert("Please input name for transformer")
+        }
+        else if (this.state.vehicleGroup === "") {
+            alert("Please check vehicle group")
+        }
+        else if (this.state.vehicleModel === "") {
+            alert("Please check vehicle model")
+        }
+        else {
+            alert(`Transformer ${this.state.transformerName} created`)
+
+
+        }
+        axios.post(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers`,
+            {
                 name: this.state.transformerName,
                 vehicleGroup: this.state.vehicleGroup,
                 vehicleModel: this.state.vehicleModel,
                 vehicleType: this.state.vehicleType,
-            }
-
-        }
-        axios.post(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers`, { transformer })
+                gear: this.state.gear
+            })
             .then(res => {
+                console.log(res.data)
             })
     }
 
@@ -61,28 +75,31 @@ export default class AddTransformer extends Component {
     }
 
     handleVehicleGroup = (e) => {
+        if (this.state.transformerName === "") {
+            alert("Please input a name")
 
-        if (e.target.value === "Air") {
-            this.setState({
-                vehicleGroup: "Air",
-                vehicleTypeType: this.getVehicleType("Air"),
+        } else
+            if (e.target.value === "Air") {
+                this.setState({
+                    vehicleGroup: "Air",
+                    vehicleTypeType: this.getVehicleType("Air"),
 
-            })
-        }
+                })
+            }
 
-        else if (e.target.value === "Land") {
-            this.setState({
-                vehicleGroup: "Land",
-                vehicleTypeType: this.getVehicleType("Land")
-            })
-        }
+            else if (e.target.value === "Land") {
+                this.setState({
+                    vehicleGroup: "Land",
+                    vehicleTypeType: this.getVehicleType("Land")
+                })
+            }
 
-        else if (e.target.value === "Sea") {
-            this.setState({
-                vehicleGroup: "Sea",
-                vehicleTypeType: this.getVehicleType("Sea")
-            })
-        }
+            else if (e.target.value === "Sea") {
+                this.setState({
+                    vehicleGroup: "Sea",
+                    vehicleTypeType: this.getVehicleType("Sea")
+                })
+            }
 
         this.setState({
             isVehicleModelForm: true,
@@ -92,7 +109,7 @@ export default class AddTransformer extends Component {
 
     getVehicleType = (e) => {
         let definedVehiclesTypes = [];
-        this.state.vehicles.map(vehicle => {
+        this.state.vehicles.forEach(vehicle => {
             if (vehicle.group === e) {
                 if (definedVehiclesTypes.includes(vehicle.type)) {
                 } else {
@@ -114,7 +131,7 @@ export default class AddTransformer extends Component {
 
     getVehicleModel = (e) => {
         let vehicleModelTypes = [];
-        this.state.vehicles.map(model => {
+        this.state.vehicles.forEach(model => {
             if (model.type === e) {
                 if (vehicleModelTypes.includes(model.model)) {
 
@@ -123,18 +140,22 @@ export default class AddTransformer extends Component {
                     vehicleModelTypes.push(model.model)
                 }
             }
-
         })
         return vehicleModelTypes
 
     }
 
     handleVehicleModel = (e) => {
-        console.log(e.target.value)
         this.setState({
             vehicleModel: e.target.value
         })
 
+    }
+
+    handleGearChange = (e) => {
+        this.setState({
+            gear: e.target.value
+        })
     }
 
 
@@ -200,8 +221,8 @@ export default class AddTransformer extends Component {
                                 <div className="col-sm-4">
                                     <select className="custom-select" onChange={this.handleVehicleType}>
                                         <option defaultValue>Select vehicle type</option>
-                                        {this.state.vehicleTypeType.map(selectType => {
-                                            return <option value={selectType}>{selectType}</option>
+                                        {this.state.vehicleTypeType.map((selectType, index) => {
+                                            return <option key={index} value={selectType}>{selectType}</option>
                                         })}
                                         >
                                     </select>
@@ -214,16 +235,23 @@ export default class AddTransformer extends Component {
                                     <select className="custom-select" disabled={this.state.isVehicleModelForm}
                                         onChange={this.handleVehicleModel}>
                                         <option defaultValue>Select vehicle model</option>
-                                        {this.state.vehicleModelType.map(model => {
-                                            return <option value={model.id}>{model}</option>
+                                        {this.state.vehicleModelType.map((model, index) => {
+                                            return <option key={index} value={model.id}>{model}</option>
                                         })}
-
                                     </select>
                                 </div>
                             </div>
+
+                            <div className="form-group row ">
+                                <label className="col-2 ml-3">Gear : </label>
+                                <textarea className="form-control col-sm-3 " id="gear" rows="2"
+                                    name={this.state.gear}
+                                    onChange={this.handleGearChange}></textarea>
+                            </div>
+
                             <div className="row">
-                                <label htmlFor="vehicleGroup" className="col-sm-2 col-form-label "></label>
-                                <div className="col- ml-3">
+                                <label htmlFor="vehicleGroup" className="col-sm-2 col-form-label ml-3"></label>
+                                <div className="col- ml-">
                                     <Link to={"/"}>   <button type="text" className="btn btn-primary mr-4">Cancel</button></Link>
                                     <button type="submit" className="btn btn-primary">Create</button>
                                 </div>

@@ -20,7 +20,7 @@ export default class TransformersCard extends Component {
                                 <p className="card-text mb-1">Vehicle group : {transformer.vehicleGroup}</p>
                                 <p className="card-text mb-1">Vehicle type : {transformer.vehicleType}</p>
                                 <p className="card-text mb-1">Vehicle model : {transformer.vehicleModel}</p>
-                                <p className="card-text mb-1">Gear : {transformer.gear.map(gear => <span key={gear}>{gear} </span>)}</p>
+                                <p className="card-text mb-1">Gear : {transformer.gear.map((gear, index) => <span key={index}>{gear} </span>)}</p>
                                 <span className="card-buttons">
                                     <div className="row">
                                         <p className="ml-3">Status :</p>

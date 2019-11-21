@@ -17,13 +17,13 @@ export default class Transformers extends Component {
         this.getTransformers = this.getTransformers.bind(this)
         this.updateSearch = this.updateSearch.bind(this)
         this.handleStatusDropdown = this.handleStatusDropdown.bind(this)
-        this.getTransformer = this.getTransformer.bind(this)
         this.filterByFaction = this.filterByFaction.bind(this)
     }
 
     componentDidMount() {
         this.getTransformers();
     }
+
 
     getTransformers() {
         axios.get(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers`)
@@ -39,14 +39,7 @@ export default class Transformers extends Component {
 
     }
 
-    getTransformer(id) {
-        axios.get(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers/${id}`)
-            .then(res => console.log(res.data))
-    }
-
     updateStatus(id, status) {
-        console.log("updated")
-        console.log(status)
         axios.patch(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers/${id}`,
             {
                 status: status
@@ -54,16 +47,15 @@ export default class Transformers extends Component {
 
         )
             .then(res => console.log(res.data))
-            .then(this.setState({
-            }))
-
-
             .catch(error => console.log(error))
+
     }
 
     updateSearch(e) {
 
-        console.log(e.target.value)
+        this.setState({
+            search: e.target.value
+        })
     }
 
     handleStatusDropdown = (e) => {
@@ -79,7 +71,8 @@ export default class Transformers extends Component {
 
         if (key === "Autobots") {
             this.setState({
-                transformers: this.state.allTransformers.filter(transformer => transformer.vehicleGroup === land)
+                transformers: this.state.allTransformers.filter(transformer =>
+                    transformer.vehicleGroup === land)
             })
         }
         else if (key === "Decepticons") {
@@ -96,14 +89,16 @@ export default class Transformers extends Component {
     }
 
     render() {
-        const { transformers } = this.state
-        console.log(transformers)
+        const { transformers, search } = this.state
+        let filteredTransformers = transformers.filter(transformer => {
+            return transformer.name.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+        })
         return (
             <div className="transformers-class">
                 <NavigationBar filterByFaction={this.filterByFaction} />
                 <SearchBar updateSearch={this.updateSearch} />
                 {
-                    transformers.map(transformer => <TransformersCard transformer={transformer}
+                    filteredTransformers.map(transformer => <TransformersCard transformer={transformer}
                         key={transformer.id} handleStatusDropdown={this.handleStatusDropdown} />)
                 }
             </div>

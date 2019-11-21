@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { MdModeEdit, MdTrackChanges } from 'react-icons/md'
+import { MdModeEdit } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 export default class TransformerDetails extends Component {
     constructor(props) {
@@ -10,7 +10,10 @@ export default class TransformerDetails extends Component {
             isEditMode: true,
             vehicleGroup: "",
             vehicles: [],
-            vehicleType: [],
+            vehicleTypes: [],
+            vehicleType: "",
+
+
         }
         this.getTransformer = this.getTransformer.bind(this)
         this.handleEditMode = this.handleEditMode.bind(this)
@@ -52,58 +55,92 @@ export default class TransformerDetails extends Component {
     }
 
     handleEditMode(e) {
-
         this.setState({
             isEditMode: !this.state.isEditMode,
         })
     }
 
-    handleVehicleTypes(e) {
+    handleVehicleTypes = (e) => {
         const type = e.target.value
+        console.log(type)
+        this.setState({
+            vehicleType: type
+        })
+
         this.getVehicleTypes(type);
 
     }
 
     getVehicleTypes(vehicleTypeSelected) {
         const vehicles = this.state.vehicles
-        let vehicleType = [];
+        let vehicleTypes = [];
         vehicles.forEach(type => {
             if (type.group === vehicleTypeSelected) {
-                if (vehicleType.includes(type.type)) {
+                if (vehicleTypes.includes(type.type)) {
                     return;
                 }
                 else {
-                    vehicleType.push(type.type)
+                    vehicleTypes.push(type.type)
                 }
             }
 
         })
+        console.log(vehicleTypes)
         this.setState({
-            vehicleType: vehicleType
+            vehicleTypes: vehicleTypes
         })
+    }
+
+    getVehicleModel() {
+
+    }
+
+    handleEditName = (e) => {
+        this.setState({
+            transformerName: e.target.value
+        })
+    }
+
+    handleSave = () => {
+        const id = this.props.match.params.id
+        axios.patch(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers/${id}`,
+            {
+                name: this.state.transformerName,
+                vehicleGroup: this.state.vehicleGroup,
+                vehicleModel: this.state.vehicleModel,
+                vehicleType: this.state.vehicleType,
+                gear: this.state.gear
+            }
+        )
+            .then(res => console.log(res.data))
     }
 
     render() {
         const { transformer, isEditMode } = this.state
 
         return (
-            <div className="details-class">
-                <div className="container">
-                    <h3> {isEditMode ? transformer.name :
-                        <input className="form-control col-8 mx-auto "
-                            defaultValue={transformer.name} type="text"
-                            onChange={this.renderView}>
-                        </input>}  <MdModeEdit onClick={this.handleEditMode} /></h3>
+            <div className="details-class ">
+                <div className="container p-2">
+                    <div className="pt-5 pb-2">
+                        {isEditMode ? <h3>{transformer.name} <MdModeEdit onClick={this.handleEditMode} /> </h3> :
+                            <div className="form-group row ">
+                                <label htmlFor="name" className="col-sm-3 col-form-label">Name :</label>
+                                <input className="form-control col-4 ml-2 "
+                                    defaultValue={transformer.name} type="text"
+                                    onChange={this.handleEditName}>
 
+                                </input>
+                            </div>}
+                    </div>
                     <div className="transformer-info">
-                        <div className="group-class">
-
+                        <div className="group-class ">
                             {isEditMode ? <h6>Vehicle group : {transformer.vehicleGroup}</h6> :
                                 <div className="form-group row ">
                                     <label htmlFor="name" className="col-3 col-form-label">Vehicle group : </label>
-                                    <div className=" select-radio col-4">
+                                    <div className=" select-radio col-4 text-left">
                                         <div className="custom-control custom-radio custom-control-inline">
                                             <input
+
                                                 type="radio"
                                                 id="customRadioInline1"
                                                 name="vehicleGroup"
@@ -116,6 +153,7 @@ export default class TransformerDetails extends Component {
                                         </div>
                                         <div className="custom-control custom-radio custom-control-inline">
                                             <input
+
                                                 type="radio"
                                                 id="customRadioInline2"
                                                 name="vehicleGroup"
@@ -128,6 +166,7 @@ export default class TransformerDetails extends Component {
                                         </div>
                                         <div className="custom-control custom-radio custom-control-inline">
                                             <input
+
                                                 type="radio"
                                                 id="customRadioInline3"
                                                 name="vehicleGroup"
@@ -149,9 +188,9 @@ export default class TransformerDetails extends Component {
                                     <div className="col-4">
                                         <select className="custom-select" onChange={this.handleVehicleType}>
                                             <option >{transformer.vehicleType}</option>
-                                            {/* {this.state.vehicleTypeType.map(selectType => {
-                                            return <option value={selectType}>{selectType}</option>
-                                        })} */}
+                                            {this.state.vehicleTypes.map((selectType, index) => {
+                                                return <option key={index} value={selectType}>{selectType}</option>
+                                            })}
                                             >
                                     </select>
                                     </div>
@@ -162,11 +201,11 @@ export default class TransformerDetails extends Component {
                                 (<div className="form-group row">
                                     <label htmlFor="vehicleGroup" className="col-sm-3 col-form-label">Vehicle model:</label>
                                     <div className="col-sm-4">
-                                        <select className="custom-select" disabled={this.state.isVehicleModelForm} onChange={this.handleVehicleModel}>
+                                        <select className="custom-select" onChange={this.handleVehicleModel}>
                                             <option defaultValue>{transformer.vehicleModel}</option>
-                                            {/* {this.state.vehicleModelType.map(model => {
-                                                return <option value={model.id}>{model}</option>
-                                            })} */}
+                                            {this.state.vehicleTypes.map((model, index) => {
+                                                return <option key={index} value={model.id}>{model}</option>
+                                            })}
 
                                         </select>
                                     </div>
@@ -175,13 +214,13 @@ export default class TransformerDetails extends Component {
 
                         </div>
 
-                        {isEditMode ? (<h6>Gear : {transformer.gear}</h6>) :
+                        {isEditMode ? (<h6>Gear : {transformer.gear} </h6>) :
                             <div>
                                 <div className="form-group row ">
                                     <label htmlFor="name" className="col-sm-3 col-form-label">Gear :</label>
-                                    <div className="col-6">
+                                    <div className="col-4">
                                         <input type="text" className="form-control"
-                                            defaultValue={transformer.name}
+                                            defaultValue={transformer.gear}
                                             name={this.state.transformerName}
                                             onChange={this.handleInputChange} />
                                     </div>
@@ -190,11 +229,13 @@ export default class TransformerDetails extends Component {
                             </div>
                         }
                     </div>
-                    <div className="row">
-                        <div className="col-12">
-                            <Link to={"/"}> <button type="text" className="btn btn-dark ">Return</button></Link>
+                    {isEditMode ? <Link to={"/"}> <button type="text" className="btn btn-dark mt-4">Return</button></Link> : <div className="row">
+                        <div className="col-10 ">
+                            <Link to={"/"}> <button type="text" className="btn btn-dark " onClick={this.handleSave}>Save</button></Link>
+                            <Link to={"/"}> <button type="text" className="btn btn-dark ">Cancel</button></Link>
                         </div>
-                    </div>
+                    </div>}
+
                 </div>
             </div >
         )
