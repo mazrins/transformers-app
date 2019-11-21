@@ -1,3 +1,8 @@
+## Transformers project application
+
+I decided to create application with React because I think it is a very powerful tool for building applications.
+Think it is great choice for this type of project and  it is very fast.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
