@@ -11,14 +11,14 @@ export default class TransformerDetails extends Component {
             vehicleGroup: "",
             vehicles: [],
             vehicleTypes: [],
-            vehicleType: "",
+            vehicleModelType: [],
+            gear: []
+
 
 
         }
         this.getTransformer = this.getTransformer.bind(this)
         this.handleEditMode = this.handleEditMode.bind(this)
-        this.getVehicles = this.getVehicles.bind(this)
-        this.handleVehicleTypes = this.handleVehicleTypes.bind(this)
     }
 
     componentDidMount() {
@@ -31,7 +31,9 @@ export default class TransformerDetails extends Component {
         axios.get(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers/${id}`)
             .then(res =>
                 this.setState({
-                    transformer: res.data
+                    transformer: res.data,
+                    gear: res.data.gear,
+                    vehicleGroup: res.data.vehicleGroup
                 })
             )
             .catch(error => console.log(error))
@@ -60,14 +62,37 @@ export default class TransformerDetails extends Component {
         })
     }
 
-    handleVehicleTypes = (e) => {
+    handleVehicleGroup = (e) => {
+        if (e.target.value === "Air") {
+            this.setState({
+                vehicleGroup: "Air",
+                vehicleTypes: this.getVehicleTypes("Air"),
+
+            })
+        }
+
+        else if (e.target.value === "Land") {
+            this.setState({
+                vehicleGroup: "Land",
+                vehicleTypes: this.getVehicleTypes("Land")
+            })
+        }
+
+        else if (e.target.value === "Sea") {
+            this.setState({
+                vehicleGroup: "Sea",
+                vehicleTypes: this.getVehicleTypes("Sea")
+            })
+        }
+    }
+
+    handleVehicleType = (e) => {
         const type = e.target.value
-        console.log(type)
         this.setState({
-            vehicleType: type
+            vehicleType: type,
+            vehicleModelType: this.getVehicleModel(type)
         })
 
-        this.getVehicleTypes(type);
 
     }
 
@@ -86,18 +111,39 @@ export default class TransformerDetails extends Component {
 
         })
 
-        this.setState({
-            vehicleTypes: vehicleTypes
-        })
+        return vehicleTypes
     }
 
-    getVehicleModel() {
+    getVehicleModel = (e) => {
+        let vehicleModelTypes = [];
+        this.state.vehicles.forEach(model => {
+            if (model.type === e) {
+                if (vehicleModelTypes.includes(model.model)) {
 
+                }
+                else {
+                    vehicleModelTypes.push(model.model)
+                }
+            }
+        })
+        return vehicleModelTypes
+    }
+
+    handleVehicleModel = (e) => {
+        this.setState({
+            vehicleModel: e.target.value
+        })
     }
 
     handleEditName = (e) => {
         this.setState({
             transformerName: e.target.value
+        })
+    }
+
+    handleInputGearChange = (e) => {
+        this.setState({
+            gear: e.target.value
         })
     }
 
@@ -146,7 +192,7 @@ export default class TransformerDetails extends Component {
                                                 name="vehicleGroup"
                                                 value="Air"
                                                 className="custom-control-input"
-                                                onChange={this.handleVehicleTypes}
+                                                onChange={this.handleVehicleGroup}
                                             >
                                             </input>
                                             <label className="custom-control-label" htmlFor="customRadioInline1">Air</label>
@@ -159,7 +205,7 @@ export default class TransformerDetails extends Component {
                                                 name="vehicleGroup"
                                                 value="Sea"
                                                 className="custom-control-input"
-                                                onChange={this.handleVehicleTypes}
+                                                onChange={this.handleVehicleGroup}
                                             >
                                             </input>
                                             <label className="custom-control-label" htmlFor="customRadioInline2">Sea</label>
@@ -172,7 +218,7 @@ export default class TransformerDetails extends Component {
                                                 name="vehicleGroup"
                                                 value="Land"
                                                 className="custom-control-input"
-                                                onChange={this.handleVehicleTypes}
+                                                onChange={this.handleVehicleGroup}
                                             >
                                             </input>
                                             <label className="custom-control-label" htmlFor="customRadioInline3">Land</label>
@@ -203,7 +249,7 @@ export default class TransformerDetails extends Component {
                                     <div className="col-sm-4">
                                         <select className="custom-select" onChange={this.handleVehicleModel}>
                                             <option defaultValue>{transformer.vehicleModel}</option>
-                                            {this.state.vehicleTypes.map((model, index) => {
+                                            {this.state.vehicleModelType.map((model, index) => {
                                                 return <option key={index} value={model.id}>{model}</option>
                                             })}
 
@@ -222,7 +268,7 @@ export default class TransformerDetails extends Component {
                                         <input type="text" className="form-control"
                                             defaultValue={transformer.gear}
                                             name={this.state.transformerName}
-                                            onChange={this.handleInputChange} />
+                                            onChange={this.handleInputGearChange} />
                                     </div>
                                 </div>
 
