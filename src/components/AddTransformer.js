@@ -41,21 +41,22 @@ export default class AddTransformer extends Component {
             alert("Please check vehicle model")
         }
         else {
+
+            axios.post(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers`,
+                {
+                    name: this.state.transformerName,
+                    vehicleGroup: this.state.vehicleGroup,
+                    vehicleModel: this.state.vehicleModel,
+                    vehicleType: this.state.vehicleType,
+                    gear: this.state.gear
+                })
+                .then(res => {
+                    console.log(res.data)
+                })
+
             alert(`Transformer ${this.state.transformerName} created`)
 
-
         }
-        axios.post(`https://my-json-server.typicode.com/DyslexicDcuk/transformers-api/transformers`,
-            {
-                name: this.state.transformerName,
-                vehicleGroup: this.state.vehicleGroup,
-                vehicleModel: this.state.vehicleModel,
-                vehicleType: this.state.vehicleType,
-                gear: this.state.gear
-            })
-            .then(res => {
-                console.log(res.data)
-            })
     }
 
     getVehicles = () => {
@@ -78,28 +79,28 @@ export default class AddTransformer extends Component {
         if (this.state.transformerName === "") {
             alert("Please input a name")
 
-        } else
-            if (e.target.value === "Air") {
-                this.setState({
-                    vehicleGroup: "Air",
-                    vehicleTypeType: this.getVehicleType("Air"),
+        }
+        if (e.target.value === "Air") {
+            this.setState({
+                vehicleGroup: "Air",
+                vehicleTypeType: this.getVehicleType("Air"),
 
-                })
-            }
+            })
+        }
 
-            else if (e.target.value === "Land") {
-                this.setState({
-                    vehicleGroup: "Land",
-                    vehicleTypeType: this.getVehicleType("Land")
-                })
-            }
+        else if (e.target.value === "Land") {
+            this.setState({
+                vehicleGroup: "Land",
+                vehicleTypeType: this.getVehicleType("Land")
+            })
+        }
 
-            else if (e.target.value === "Sea") {
-                this.setState({
-                    vehicleGroup: "Sea",
-                    vehicleTypeType: this.getVehicleType("Sea")
-                })
-            }
+        else if (e.target.value === "Sea") {
+            this.setState({
+                vehicleGroup: "Sea",
+                vehicleTypeType: this.getVehicleType("Sea")
+            })
+        }
 
         this.setState({
             isVehicleModelForm: true,

@@ -85,7 +85,7 @@ export default class TransformerDetails extends Component {
             }
 
         })
-        console.log(vehicleTypes)
+
         this.setState({
             vehicleTypes: vehicleTypes
         })
